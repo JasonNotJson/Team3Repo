@@ -4,7 +4,12 @@ Git repo for intermediate JS
 
 ## About the project
 
-Not decided yet
+Utilize API services to create a Javascript project for beginner level.
+
+### options
+
+- openai API
+- google maps API
 
 ### Stack
 
