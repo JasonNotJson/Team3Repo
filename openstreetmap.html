@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Open Street Map with Leaflet - 1</title>
+    <meta charset="utf-8" />
+    <!-- スタイルシート -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <!-- leafletのライブラリ挿入 -->
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+    <!-- ここからプログラム -->
+    <script>
+      function start() {
+        // 地図生成, map_areaへマッピング, setViewで緯度・経度、ズーム設定
+        var mymap = L.map("map_area").setView([35.7089403, 139.721231], 18);
+        // open street mapへのリンク
+        var mapLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
+        // tileLayerメソッドでURLの地図を表示、attributionは右下のメッセージ文, openStreetMapのズーム最大値を設定
+        // addtoで先ほど生成したmymapに反映
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "Map data &copy;" + mapLink,
+          maxZoom: 18,
+        }).addTo(mymap);
+      }
+    </script>
+  </head>
+  <!-- 開いた時にstart関数、リサイズした時にstart関数を実行 -->
+  <body onload="start()" onresize="start()">
+    <!-- map_areaという名前の領域を800x400で用意 -->
+    <div id="map_area" style="width: 800px; height: 800px"></div>
+  </body>
+</html>
