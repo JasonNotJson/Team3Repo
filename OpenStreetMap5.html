@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Team 3 website</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+    <script>
+      var mymap;
+      var waseda_lat = 35.7089403,
+        waseda_lon = 139.721231;
+      var toko_lat = 35.7861036,
+        toko_lon = 139.39959393;
+      var lat_now = waseda_lat,
+        lon_now = waseda_lon;
+      var lat_diff = (toko_lat - waseda_lat) / 50,
+        lon_diff = (toko_lon - waseda_lon) / 50;
+      var iterateID;
+
+      const start = () => {
+        mymap = L.map("map_area").setView([lat_now, lon_now], 15);
+        const mapLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "Map data &copy;" + mapLink,
+          maxZoom: 18,
+        }).addTo(mymap);
+      };
+
+      const panIntervals = () => {
+        if (
+          Math.abs(lat_now - toko_lat) < 0.0001 &&
+          Math.abs(lon_now - toko_lon) < 0.0001
+        ) {
+          clearInterval(iterateID);
+          alert("ARRIVED!");
+        } else {
+          lat_now += lat_diff;
+          lon_now += lon_diff;
+          mymap.panTo([lat_now, lon_now]);
+        }
+      };
+
+      const move = () => {
+        iterateID = window.setInterval(function () {
+          panIntervals();
+        }, 1000);
+      };
+    </script>
+  </head>
+  <body onload="start()" onresize="start()">
+    <div>
+      <!-- <h1>Welcome to my website!</h1>
+      <p>This is my first HTML page.</p>
+      <p>Testing out OSM</p> -->
+    </div>
+    <a href="#" onClick="move()">Pan to</a>
+    <a href="#" onClick="clearInterval(iterateID)">stop</a>
+    <div id="map_area" style="width: 800px; height: 800px"></div>
+  </body>
+</html>
