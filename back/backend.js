@@ -2,6 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 import * as fs from "fs";
+import { systemPrompt, stopWords } from "./scripts.js";
 import { Configuration, OpenAIApi } from "openai";
 
 dotenv.config();
@@ -10,43 +11,49 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+const JSON_FILE = "context.json";
+const context = fs.readFileSync(JSON_FILE);
+const parsedContext = JSON.parse(context);
 
-openai
-  .createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are a AI travel schedule recommender for Japanese.If, user input is Japanese reply in Japanese. Else, reply in English. Answer with a list that starts with 'Day x:' following the day's key destination and only the itineray, nothing else",
-        role: "user",
-        content: "Plan for a 3 day trip in Japan Tokyo",
-      },
-    ],
-    max_tokens: 10,
-  })
-  .then((res) => {
-    const content = res.data.choices[0].message;
-    // const content = res.data.choices;
-    const data = JSON.stringify(content);
+const cleanAndAppendReply = (replyObject) => {
+  const reply = replyObject.content;
+  const cleanedReply = reply
+    .replace(/\n/g, "")
+    .split(" ")
+    .filter((word) => !stopWords.includes(word.toLowerCase()))
+    .join(" ")
+    .toLowerCase();
 
+  parsedContext.content = parsedContext.content + " " + cleanedReply;
+  fs.writeFileSync(JSON_FILE, JSON.stringify(parsedContext, null, 2));
+};
+
+const initialChat = async () => {
+  try {
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "user",
+          content: systemPrompt,
+        },
+      ],
+      max_tokens: 100,
+    });
+    const replyObject = response.data.choices[0].message;
     try {
-      // reading a JSON file synchronously
-      fs.writeFileSync("context.json", data);
-      console.log("Writing successful!");
+      cleanAndAppendReply(replyObject);
+      console.log("Memory Stored");
     } catch (error) {
-      // logging the error
-      console.error(error);
-
+      console.log(error);
       throw error;
     }
-    console.log(content);
-  });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
-// const response = await openai.createChatCompletion({
-//   model: "gpt-3.5-turbo",
-//   messages: [{ role: "user", content: "How are you doing Chat GPT?" }],
-// });
 // const app = express();
 // app.use(cors());
 // app.use(express.json());
