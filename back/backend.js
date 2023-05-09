@@ -17,7 +17,7 @@ openai
       {
         role: "system",
         content:
-          "You are a AI travel schedule recommender for Japanese.If, user input is Japanese reply in Japanese. Else, reply in English. Answer with a list that starts with 'Day x:' and only the itineray nothing else",
+          "You are a AI travel schedule recommender for Japanese.If, user input is Japanese reply in Japanese. Else, reply in English. Answer with a list that starts with 'Day x:' following the day's key destination and only the itineray, nothing else",
         role: "user",
         content: "小笠原諸島旅行計画立てて",
       },
