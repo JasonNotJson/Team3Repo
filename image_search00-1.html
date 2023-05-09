@@ -1,0 +1,156 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Flicker Image Search</title>
+    <script>
+      // Flicker Photo Searchの実行
+      function imageSearch() {
+        // ユーザ入力のクエリを取得
+        var query = document.getElementById("searchText").value;
+        // FlickerPhotoSearchを実行するためのスクリプトを生成
+        var new_script = document.createElement("script");
+        new_script.src =
+          "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=531f4274a3ae9bcf06f1a28f3aa96e32&format=json&jsoncallback=showResults&safe_search=1&sort=relevance&tags=" +
+          query;
+        // 生成したスクリプトを自HTMLの先頭に追加してブラウザに実行させる
+        document.head.appendChild(new_script);
+      }
+
+      // 検索結果の表示（dataに検索結果が入る（FlickerがJSON形式で入れてくれる））
+      function showResults(data) {
+        clearResults(1);
+        // Flickerから戻るdata形式は https://www.flickr.com/services/api/flickr.photos.search.htmlのexample results
+        if (data.stat != "ok") {
+          // 検索が成功しているかどうか確認、失敗の時はstatusを表示して戻る
+          document.write(data.stat);
+          return;
+        }
+        //最初の8個のデータのみ利用
+        var max_num = 8;
+        if (data.photos.photo.length < 8) max_num = data.photos.photo.length; //8個より検索結果が少ない場合の処理
+        for (var i = 0; i < max_num; i++) {
+          var photo = data.photos.photo[i];
+          // imgエレメントを生成
+          var new_image = document.createElement("img");
+          // imgのsrcにi番目の結果(URL)を設定 (
+          var url =
+            "https://farm" +
+            photo.farm +
+            ".staticflickr.com/" +
+            photo.server +
+            "/" +
+            photo.id +
+            "_" +
+            photo.secret +
+            "_m.jpg";
+          new_image.src = url;
+          new_image.width = "100"; // 幅を100ピクセルに設定
+          // imgエレメントを検索結果のi番目のセルに追加
+          document.getElementById("r" + String(i)).appendChild(new_image);
+        }
+      }
+
+      function clearResults(flg) {
+        switch (flg) {
+          case 1:
+            for (let i = 0; i < 8; i++) {
+              var node = document.getElementById("r" + String(i));
+              while (node.firstChild) {
+                node.removeChild(node.firstChild);
+              }
+            }
+            break;
+          case 2:
+            var node = document.getElementById("s");
+            while (node.lastChild) {
+              node.removeChild(node.lastChild);
+            }
+            break;
+          case 3:
+            var node = document.getElementById("s");
+            var baseNum = node.childNodes.length - 1;
+            var compareNum = node.childNodes.length - 2;
+
+            console.log(baseNum);
+            console.log(compareNum);
+
+            break;
+          default:
+            break;
+        }
+      }
+      function saveResult(flg) {
+        //save result of flg statement.
+        var savedImage = document.createElement("img");
+        var savedNode = document.getElementById("r" + String(flg));
+        var savedsrc = savedNode.firstChild.src;
+        savedImage.src = savedsrc;
+        savedImage.width = "100";
+        document.getElementById("s").appendChild(savedImage);
+        document
+          .getElementById("s")
+          .lastChild.addEventListener("click", function () {
+            onclickDo(this);
+          });
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- ボタンの配置 -->
+    <input id="searchText" type="text" />
+    <input
+      id="searchButton"
+      type="button"
+      value="検索"
+      onclick="imageSearch()"
+    />
+    <input
+      id="clearButton"
+      type="button"
+      value="検索結果クリア"
+      onclick="clearResults(1)"
+    />
+    <input
+      id="clearButton"
+      type="button"
+      value="保存領域クリア"
+      onclick="clearResults(2)"
+    />
+    <input
+      id="clearButton"
+      type="button"
+      value="保存領域の重複画像クリア"
+      onclick="clearResults(3)"
+    />
+    <br />
+    <h2>画像検索結果</h2>
+    <!-- 画像検索結果を8個表示するための領域をテーブルにより構築 -->
+    <table border="4" bordercolor="#ffffff" bgcolor="#cccccc">
+      <tr bgcolor="#ffffff">
+        <!-- onclickで各領域がクリックされた時にsaveResultを実行するように設定 -->
+        <td id="r0" onclick="saveResult(0)" width="100" height="100"></td>
+        <td id="r1" onclick="saveResult(1)" width="100"></td>
+        <td id="r2" onclick="saveResult(2)" width="100"></td>
+        <td id="r3" onclick="saveResult(3)" width="100"></td>
+        <td id="r4" onclick="saveResult(4)" width="100"></td>
+        <td id="r5" onclick="saveResult(5)" width="100"></td>
+        <td id="r6" onclick="saveResult(6)" width="100"></td>
+        <td id="r7" onclick="saveResult(7)" width="100"></td>
+      </tr>
+    </table>
+    <h2>画像保存領域</h2>
+    <input
+      id="searchButton"
+      type="button"
+      value="シャッフル"
+      onclick="randomizeImage()"
+    />
+    <!-- 画像保存領域はテーブル１セルで構成 -->
+    <table border="4" bordercolor="#ffffff" bgcolor="#cccccc">
+      <tr align="top">
+        <td id="s" width="800" height="100"></td>
+      </tr>
+    </table>
+  </body>
+</html>
