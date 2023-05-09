@@ -2,7 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
 import * as fs from "fs";
-import { systemPrompt, stopWords } from "./scripts.js";
+import { initialPrompt, stopWords } from "./scripts.js";
 import { Configuration, OpenAIApi } from "openai";
 
 dotenv.config();
@@ -35,7 +35,7 @@ const initialChat = async () => {
       messages: [
         {
           role: "user",
-          content: systemPrompt,
+          content: initialPrompt,
         },
       ],
       max_tokens: 100,
