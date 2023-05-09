@@ -1,6 +1,7 @@
 import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
+import * as fs from "fs";
 import { Configuration, OpenAIApi } from "openai";
 
 dotenv.config();
@@ -19,13 +20,26 @@ openai
         content:
           "You are a AI travel schedule recommender for Japanese.If, user input is Japanese reply in Japanese. Else, reply in English. Answer with a list that starts with 'Day x:' following the day's key destination and only the itineray, nothing else",
         role: "user",
-        content: "小笠原諸島旅行計画立てて",
+        content: "Plan for a 3 day trip in Japan Tokyo",
       },
     ],
-    max_tokens: 1000,
+    max_tokens: 10,
   })
   .then((res) => {
-    const content = res.data.choices[0].message.content;
+    const content = res.data.choices[0].message;
+    // const content = res.data.choices;
+    const data = JSON.stringify(content);
+
+    try {
+      // reading a JSON file synchronously
+      fs.writeFileSync("context.json", data);
+      console.log("Writing successful!");
+    } catch (error) {
+      // logging the error
+      console.error(error);
+
+      throw error;
+    }
     console.log(content);
   });
 
