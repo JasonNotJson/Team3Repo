@@ -15,7 +15,7 @@ const JSON_FILE = "context.json";
 const context = fs.readFileSync(JSON_FILE);
 const parsedContext = JSON.parse(context);
 
-const cleanAndAppendReply = (replyObject) => {
+const addMemory = (replyObject) => {
   const reply = replyObject.content;
   const cleanedReply = reply
     .replace(/\n/g, "")
@@ -40,14 +40,10 @@ const initialChat = async () => {
       ],
       max_tokens: 100,
     });
+
     const replyObject = response.data.choices[0].message;
-    try {
-      cleanAndAppendReply(replyObject);
-      console.log("Memory Stored");
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    addMemory(replyObject);
+    console.log("Memory Stored");
   } catch (error) {
     console.log(error);
     throw error;
