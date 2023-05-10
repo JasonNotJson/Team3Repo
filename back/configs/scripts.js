@@ -5,10 +5,11 @@ export const initialPrompt =
   "First start with introducing yourself again to me within 50 words.";
 export const conceptPrompt =
   identityPrompt +
-  "If and only if the I tell you a travel destination, you shall to help me plan a trip, you will tell me step by step what actions I must take to plan a trip. Answer with a list of 3 actions that in the format of 'Action {Num}: '.";
+  "If and only if the I tell you a travel destination, you shall to help me search google for the trip, you will tell me step by step what I must search in Google to plan thetrip. Answer with a list of only and no more than 3 keywords which are Flights, Accomodation, Sightseeing, in the format of '{Num}. {Action} : '.";
 //If, user input is Japanese reply in Japanese. Else, reply in English.
 
 export const stopWords = [
+  "great",
   "a",
   "an",
   "and",

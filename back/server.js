@@ -1,6 +1,7 @@
 import cors from "cors";
-import express from "express";
-import { BotConfiguration } from "./configs/botConfig.js";
+import express, { response } from "express";
+import { BotConfiguration } from "./botConfig.js";
+import { GoogleConfiguration } from "./configs/googleConfig.js";
 
 class server_side {
   constructor() {
@@ -9,6 +10,7 @@ class server_side {
     this.app.use(cors());
     this.port = process.env.PORT || 5000;
     this.bot = new BotConfiguration();
+    this.cse = new GoogleConfiguration();
   }
 
   listen() {
@@ -18,21 +20,27 @@ class server_side {
   }
 
   post() {
-    this.app.post("/", async (req, res) => {
+    this.app.post("/init", async (req, res) => {
+      try {
+        const response = this.bot.initChat();
+
+        res.status(200).send({ bot: response });
+      } catch (error) {
+        console.log(error);
+
+        res.status(500).send({ error });
+      }
+    });
+  }
+
+  post() {
+    this.app.post("/main", async (req, res) => {
       try {
         const prompt = req.body.prompt;
 
-        const response = await openai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "" }],
-          temperature: 0,
-          max_tokens: 3000,
-          top_p: 1,
-          frequency_penalty: 0.5,
-          presence_penalty: 0,
-        });
+        const response = this.bot.continueChat(prompt);
 
-        res.status(200).send({ bot: response.data.choices[0].text });
+        res.status(200).send({ bot: response });
       } catch (error) {
         console.log(error);
 
@@ -41,37 +49,3 @@ class server_side {
     });
   }
 }
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.status(200).send({ message: "Hello awesome world!" });
-});
-
-app.post("/", async (req, res) => {
-  try {
-    const prompt = req.body.prompt;
-
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "" }],
-      temperature: 0,
-      max_tokens: 3000,
-      top_p: 1,
-      frequency_penalty: 0.5,
-      presence_penalty: 0,
-    });
-
-    res.status(200).send({ bot: response.data.choices[0].text });
-  } catch (error) {
-    console.log(error);
-
-    res.status(500).send({ error });
-  }
-});
-
-app.listen(5000, () =>
-  console.log("Server is running on port http://localhost:5000")
-);

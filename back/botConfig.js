@@ -1,6 +1,11 @@
 import * as dotenv from "dotenv";
 import * as fs from "fs";
-import * as scripts from "./scripts.js";
+import {
+  identityPrompt,
+  initialPrompt,
+  conceptPrompt,
+  stopWords,
+} from "./configs/scripts.js";
 import { Configuration, OpenAIApi } from "openai";
 
 dotenv.config();
@@ -40,7 +45,7 @@ export class BotConfiguration {
         messages: [
           {
             role: "user",
-            content: scripts.initialPrompt,
+            content: initialPrompt,
           },
         ],
         max_tokens: 100,
@@ -55,24 +60,22 @@ export class BotConfiguration {
     }
   }
 
-  async mainChat(prompt) {
+  async continueChat(prompt) {
     try {
-      const response = await this.openai.createCompletion({
+      const response = await this.openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
           {
             role: "user",
-            content: scripts.conceptPrompt,
-            role: "user",
-            content: prompt,
+            content: conceptPrompt + prompt,
           },
         ],
         max_tokens: 1000,
       });
 
-      const replyObject = response.data;
+      const replyObject = response.data.choices[0].message;
       this.addMemory(replyObject);
-      console.log("Memory Stored");
+      console.log(replyObject);
       return replyObject;
     } catch (error) {
       console.log(error);
@@ -84,3 +87,6 @@ export class BotConfiguration {
     await this.initChat();
   }
 }
+
+const testInstance = new BotConfiguration();
+testInstance.continueChat("I want to travel tokyo");
