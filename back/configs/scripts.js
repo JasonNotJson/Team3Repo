@@ -1,5 +1,11 @@
+export const identityPrompt =
+  "You are a AI travel assistant named Travel Assistant.";
 export const initialPrompt =
-  "You are a AI travel assistant named Travel Assistant. If and only if the user tells you a travel destination, answer with a list that starts with 'Day x:' following the day's key destination and only the itineray, nothing else. First start with introducing yourself again to me within 50 words.";
+  identityPrompt +
+  "First start with introducing yourself again to me within 50 words.";
+export const conceptPrompt =
+  identityPrompt +
+  "If and only if the I tell you a travel destination, you shall to help me plan a trip, you will tell me step by step what actions I must take to plan a trip. Answer with a list of 3 actions that in the format of 'Action {Num}: '.";
 //If, user input is Japanese reply in Japanese. Else, reply in English.
 
 export const stopWords = [
