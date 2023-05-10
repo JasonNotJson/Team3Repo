@@ -15,6 +15,9 @@
         // 生成したスクリプトを自HTMLの先頭に追加してブラウザに実行させる
         document.head.appendChild(new_script);
       }
+      let firstClickedImage = null;
+      const bearUrl =
+        "https://www.waseda.jp/inst/weekly/assets/uploads/2020/09/071b805b703aa5b9655548a3ef50348b-610x484.jpg";
 
       // 検索結果の表示（dataに検索結果が入る（FlickerがJSON形式で入れてくれる））
       function showResults(data) {
@@ -69,16 +72,41 @@
           case 3:
             var node = document.getElementById("s");
             var baseNum = node.childNodes.length - 1;
-            var compareNum = node.childNodes.length - 2;
-
-            console.log(baseNum);
-            console.log(compareNum);
-
+            var compareNum = baseNum - 1;
+            while (baseNum >= 1) {
+              while (compareNum >= 0) {
+                if (
+                  node.childNodes[baseNum].src ==
+                  node.childNodes[compareNum].src
+                ) {
+                  node.removeChild(node.childNodes[baseNum]);
+                  break;
+                }
+                compareNum--;
+              }
+              baseNum--;
+              compareNum = baseNum - 1;
+            }
             break;
           default:
             break;
         }
       }
+
+      function onclickDo(node) {
+        const parentNode = document.getElementById("s");
+        const source = node.src;
+
+        if (node.src == bearUrl) {
+          node.src = node.alt;
+          node.alt = source;
+        } else {
+          // var source = node.src;
+          node.alt = node.src;
+          node.src = source;
+        }
+      }
+
       function saveResult(flg) {
         //save result of flg statement.
         var savedImage = document.createElement("img");
@@ -92,6 +120,119 @@
           .lastChild.addEventListener("click", function () {
             onclickDo(this);
           });
+      }
+
+      function removeIdenticalImages() {
+        var node = document.getElementById("s");
+        var baseNum = node.childNodes.length - 1;
+        var compareNum = baseNum - 1;
+        while (baseNum >= 1) {
+          while (compareNum >= 0) {
+            if (
+              node.childNodes[baseNum].src == node.childNodes[compareNum].src
+            ) {
+              node.removeChild(node.childNodes[baseNum]);
+              break;
+            }
+            compareNum--;
+          }
+          baseNum--;
+          compareNum = baseNum - 1;
+        }
+      }
+
+      function onCardClick(image) {
+        if (firstClickedImage === null) {
+          firstClickedImage = image;
+
+          var source = image.src;
+          var alt = image.alt;
+
+          image.src = source;
+          image.alt = alt;
+        } else {
+          var source = image.src;
+          var alt = image.alt;
+          image.src = source;
+          image.alt = alt;
+
+          if (firstClickedImage.src === image.src) {
+            setTimeout(() => {
+              firstClickedImage.remove();
+              image.remove();
+              checkSuccess();
+              firstClickedImage = null;
+            }, 500);
+          } else {
+            setTimeout(() => {
+              var firstImageSource = firstClickedImage.src;
+              firstClickedImage.src = firstClickedImage.alt;
+              firstClickedImage.alt = firstImageSource;
+
+              var secondImageSource = image.src;
+              image.src = image.alt;
+              image.alt = secondImageSource;
+              firstClickedImage = null;
+            }, 500);
+          }
+        }
+      }
+
+      function doubleImages() {
+        const node = document.getElementById("s");
+        const baseNum = node.childNodes.length;
+
+        for (var i = 0; i < baseNum; i++) {
+          // node.childNodes[i].removeEventListener("click", onclickDo);
+          node.childNodes[i].addEventListener("click", function () {
+            onCardClick(this);
+          });
+        }
+
+        for (var i = 0; i < baseNum; i++) {
+          var newImage = document.createElement("img");
+          newImage.src = node.childNodes[i].src;
+          newImage.width = "100";
+          newImage.alt = bearUrl;
+
+          node.appendChild(newImage);
+          newImage.addEventListener("click", function () {
+            onclickDo(this);
+          });
+          newImage.addEventListener("click", function () {
+            onCardClick(this);
+          });
+        }
+      }
+
+      function randomizeImage() {
+        removeIdenticalImages();
+        doubleImages();
+
+        const node = document.getElementById("s");
+        const baseNum = node.childNodes.length;
+
+        for (var i = 0; i <= baseNum * 3; i++) {
+          var a = Math.floor(Math.random() * baseNum);
+          var b = Math.floor(Math.random() * baseNum);
+          var tmp = node.childNodes[b].src;
+          node.childNodes[b].src = node.childNodes[a].src;
+          node.childNodes[a].src = tmp;
+        }
+
+        setTimeout(function () {
+          for (var i = 0; i < baseNum; i++) {
+            node.childNodes[i].alt = node.childNodes[i].src;
+            node.childNodes[i].src = bearUrl;
+          }
+        }, 1000);
+      }
+
+      function checkSuccess() {
+        const node = document.getElementById("s");
+        if (node.childNodes.length === 0) {
+          alert("You Win!!!!");
+        }
       }
     </script>
   </head>
