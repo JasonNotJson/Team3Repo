@@ -10,7 +10,7 @@
         // FlickerPhotoSearchを実行するためのスクリプトを生成
         var new_script = document.createElement("script");
         new_script.src =
-          "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=531f4274a3ae9bcf06f1a28f3aa96e32&format=json&jsoncallback=showResults&safe_search=1&sort=relevance&tags=" +
+          "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={ FLICKR_API_KEY }&format=json&jsoncallback=showResults&safe_search=1&sort=relevance&tags=" +
           query;
         // 生成したスクリプトを自HTMLの先頭に追加してブラウザに実行させる
         document.head.appendChild(new_script);
