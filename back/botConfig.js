@@ -30,10 +30,22 @@ export class BotConfiguration {
       .filter((word) => !stopWords.includes(word.toLowerCase()))
       .join(" ")
       .toLowerCase();
-    const summarizedContext = this.summarizeChat(cleanedReply);
 
-    this.parsedJson.content = this.parsedJson.content + " " + summarizedContext;
-    fs.writeFileSync(this.JSON_FILE, JSON.stringify(this.parsedJson, null, 2));
+    if (context === "") {
+      this.context = this.context + " " + cleanedReply;
+      fs.writeFileSync(
+        this.JSON_FILE,
+        JSON.stringify(this.parsedJson, null, 2)
+      );
+    } else {
+      const summarizedContext = this.summarizeChat(cleanedReply);
+
+      this.context = this.context + " " + summarizedContext;
+      fs.writeFileSync(
+        this.JSON_FILE,
+        JSON.stringify(this.parsedJson, null, 2)
+      );
+    }
   }
 
   async initChat() {

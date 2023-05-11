@@ -19,6 +19,7 @@ class server_side {
     });
   }
 
+  // initiate Chat
   post() {
     this.app.post("/init", async (req, res) => {
       try {
@@ -33,6 +34,7 @@ class server_side {
     });
   }
 
+  //Continue Chat
   post() {
     this.app.post("/main", async (req, res) => {
       try {
