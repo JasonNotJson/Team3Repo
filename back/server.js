@@ -1,7 +1,7 @@
 import cors from "cors";
 import express, { response } from "express";
 import { BotConfiguration } from "./botConfig.js";
-import { GoogleConfiguration } from "./configs/googleConfig.js";
+import { GoogleConfiguration } from "./googleConfig.js";
 
 class server_side {
   constructor() {
@@ -10,7 +10,7 @@ class server_side {
     this.app.use(cors());
     this.port = process.env.PORT || 5000;
     this.bot = new BotConfiguration();
-    this.cse = new GoogleConfiguration();
+    this.gcse = new GoogleConfiguration();
   }
 
   listen() {

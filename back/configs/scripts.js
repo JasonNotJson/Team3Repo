@@ -9,6 +9,8 @@ export const conceptPrompt =
 //If, user input is Japanese reply in Japanese. Else, reply in English.
 export const summaryPrompt =
   "The following text is the context of the chats you answered. Summarize into the shortest form possible but without loss of essential information that you can best understand. Also return a list of the best next actions in format of '\\n{NEXT_ACTION} : '.";
+export const continuePrompt =
+  "The following text was the chat I had with you in the past. Chat accordingly.";
 export const stopWords = [
   "great",
   "a",

@@ -16,7 +16,7 @@ export class BotConfiguration {
       apiKey: process.env.OPENAI_API_KEY,
     });
     this.openai = new OpenAIApi(this.configuration);
-    this.JSON_FILE = "context.json";
+    this.JSON_FILE = "./context.json";
     this.fh = fs.readFileSync(this.JSON_FILE);
     this.parsedJson = JSON.parse(this.fh);
     this.context = this.parsedJson.content;
@@ -31,16 +31,19 @@ export class BotConfiguration {
       .join(" ")
       .toLowerCase();
 
-    if (context === "") {
-      this.context = this.context + " " + cleanedReply;
+    if (this.context === "") {
+      console.log(cleanedReply);
+      this.parsedJson.content = this.context + " " + cleanedReply;
       fs.writeFileSync(
         this.JSON_FILE,
         JSON.stringify(this.parsedJson, null, 2)
       );
     } else {
-      const summarizedContext = this.summarizeChat(cleanedReply);
+      console.log("there was context");
+      const contextString = this.context + cleanedReply;
+      const summarizedContext = this.summarizeChat(contextString);
 
-      this.context = this.context + " " + summarizedContext;
+      this.parsedJson.content = this.context + " " + summarizedContext;
       fs.writeFileSync(
         this.JSON_FILE,
         JSON.stringify(this.parsedJson, null, 2)
@@ -74,7 +77,7 @@ export class BotConfiguration {
 
   async continueChat(prompt) {
     try {
-      const response = await this.openai.createChatCompletion({
+      const secretResponse = await this.openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
           {
@@ -82,12 +85,27 @@ export class BotConfiguration {
             content: conceptPrompt + prompt,
           },
         ],
+        max_tokens: 500,
+      });
+
+      const response = await this.openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: continuePrompt + this.context + prompt,
+          },
+        ],
         max_tokens: 1000,
       });
 
+      const secretReplyObject = secretResponse.data.choices[0].message;
       const replyObject = response.data.choices[0].message;
       const body = replyObject.content;
       this.addMemory(replyObject);
+      console.log("Secret Reply : ");
+      console.log(secretReplyObject);
+      console.log("Reply : ");
       console.log(replyObject);
       return body;
     } catch (error) {
@@ -102,7 +120,7 @@ export class BotConfiguration {
         messages: [
           {
             role: "user",
-            content: summaryPrompt + this.context,
+            content: summaryPrompt + this.context + reply,
           },
         ],
         max_tokens: 1000,
@@ -110,6 +128,8 @@ export class BotConfiguration {
 
       const replyObject = response.data.choices[0].message;
       const body = replyObject.content;
+      console.log("Summary : ");
+      console.log(replyObject);
       return body;
     } catch (error) {
       console.log(error);
@@ -123,5 +143,5 @@ export class BotConfiguration {
 }
 
 const testInstance = new BotConfiguration();
-testInstance.summarizeChat();
+testInstance.continueChat("I want to go to a 3 day tokyo trip");
 // console.log(testInstance.context);
