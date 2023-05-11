@@ -12,23 +12,23 @@ export class GoogleConfiguration {
       searchQuery
     )}`;
   }
-  fetch(searchUrl)
-    .then((response) => response.json())
-}
 
-// Make the request
-fetch(searchUrl)
-  .then((response) => response.json())
-  .then((data) => {
-    // Process the JSON response
-    console.log(data);
-    // Extract and display the search results
-    var items = data.items;
-    items.forEach((item) => {
-      // console.log(item.title);
-      console.log(item.link);
-    });
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
+  fetchQueryResults(searchQuery) {
+    const searchUrl = `${this.apiUrl}?key=${this.apiKey}&cx=${
+      this.cx
+    }&q=${encodeURIComponent(searchQuery)}`;
+
+    fetch(searchUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        var items = data.items;
+        items.forEach((item) => {
+          console.log(item.link);
+        });
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  }
+}

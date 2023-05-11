@@ -40,7 +40,7 @@ class server_side {
       try {
         const prompt = req.body.prompt;
 
-        const response = this.bot.continueChat(prompt);
+        const response = this.bot.Chat(prompt);
 
         res.status(200).send({ bot: response });
       } catch (error) {
