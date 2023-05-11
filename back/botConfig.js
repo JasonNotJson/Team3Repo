@@ -52,7 +52,7 @@ export class BotConfiguration {
       const replyObject = response.data.choices[0].message;
       const body = replyObject.content;
       this.addMemory(replyObject);
-      console.log("Memory Stored");
+      console.log("Chat initiated Memory Stored");
       return body;
     } catch (error) {
       console.log(error);
@@ -98,7 +98,6 @@ export class BotConfiguration {
 
       const replyObject = response.data.choices[0].message;
       const body = replyObject.content;
-      console.log(replyObject);
       return body;
     } catch (error) {
       console.log(error);
