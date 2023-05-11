@@ -5,9 +5,10 @@ export const initialPrompt =
   "First start with introducing yourself again to me within 50 words.";
 export const conceptPrompt =
   identityPrompt +
-  "If and only if the I tell you a travel destination, you shall to help me search google for the trip, you will tell me step by step what I must search in Google to plan thetrip. Answer with a list of only and no more than 3 keywords which are Flights, Accomodation, Sightseeing, in the format of '{Num}. {Action} : '.";
+  "If and only if the I tell you a travel destination, you shall to help me search google for the trip, you will tell me step by step what I must search in Google to plan thetrip. Answer with a list of only and no more than 5 keywords which include Flights, Accomodation, Sightseeing, in the format of '{Num}. {Action} : '.";
 //If, user input is Japanese reply in Japanese. Else, reply in English.
-
+export const summaryPrompt =
+  "The following text is the context of the chats you answered. Summarize into the shortest form possible but without loss of essential information that you can best understand. Also return a list of the best next actions in format of '\\n{NEXT_ACTION} : '.";
 export const stopWords = [
   "great",
   "a",

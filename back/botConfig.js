@@ -1,9 +1,9 @@
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 import {
-  identityPrompt,
   initialPrompt,
   conceptPrompt,
+  summaryPrompt,
   stopWords,
 } from "./configs/scripts.js";
 import { Configuration, OpenAIApi } from "openai";
@@ -17,8 +17,9 @@ export class BotConfiguration {
     });
     this.openai = new OpenAIApi(this.configuration);
     this.JSON_FILE = "context.json";
-    this.context = fs.readFileSync(this.JSON_FILE);
-    this.parsedContext = JSON.parse(this.context);
+    this.fh = fs.readFileSync(this.JSON_FILE);
+    this.parsedJson = JSON.parse(this.fh);
+    this.context = this.parsedJson.content;
   }
 
   addMemory(replyObject) {
@@ -29,13 +30,10 @@ export class BotConfiguration {
       .filter((word) => !stopWords.includes(word.toLowerCase()))
       .join(" ")
       .toLowerCase();
+    const summarizedContext = this.summarizeChat(cleanedReply);
 
-    this.parsedContext.content =
-      this.parsedContext.content + " " + cleanedReply;
-    fs.writeFileSync(
-      this.JSON_FILE,
-      JSON.stringify(this.parsedContext, null, 2)
-    );
+    this.parsedJson.content = this.parsedJson.content + " " + summarizedContext;
+    fs.writeFileSync(this.JSON_FILE, JSON.stringify(this.parsedJson, null, 2));
   }
 
   async initChat() {
@@ -52,8 +50,10 @@ export class BotConfiguration {
       });
 
       const replyObject = response.data.choices[0].message;
+      const body = replyObject.content;
       this.addMemory(replyObject);
       console.log("Memory Stored");
+      return body;
     } catch (error) {
       console.log(error);
       throw error;
@@ -74,9 +74,32 @@ export class BotConfiguration {
       });
 
       const replyObject = response.data.choices[0].message;
+      const body = replyObject.content;
       this.addMemory(replyObject);
       console.log(replyObject);
-      return replyObject;
+      return body;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  async summarizeChat(reply) {
+    try {
+      const response = await this.openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: summaryPrompt + this.context,
+          },
+        ],
+        max_tokens: 1000,
+      });
+
+      const replyObject = response.data.choices[0].message;
+      const body = replyObject.content;
+      console.log(replyObject);
+      return body;
     } catch (error) {
       console.log(error);
       throw error;
@@ -89,4 +112,5 @@ export class BotConfiguration {
 }
 
 const testInstance = new BotConfiguration();
-testInstance.continueChat("I want to travel tokyo");
+testInstance.summarizeChat();
+// console.log(testInstance.context);
