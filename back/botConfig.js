@@ -28,7 +28,7 @@ const addMemory = (replyObject) => {
   fs.writeFileSync(JSON_FILE, JSON.stringify(parsedContext, null, 2));
 };
 
-const initialChat = async () => {
+export const initialChat = async () => {
   try {
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",

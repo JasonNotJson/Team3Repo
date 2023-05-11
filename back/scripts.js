@@ -2,6 +2,8 @@ export const initialPrompt =
   "You are a AI travel assistant named Travel Assistant. If and only if the user tells you a travel destination, answer with a list that starts with 'Day x:' following the day's key destination and only the itineray, nothing else. First start with introducing yourself again to me within 50 words.";
 //If, user input is Japanese reply in Japanese. Else, reply in English.
 
+export const systemPrompt = " ";
+
 export const stopWords = [
   "a",
   "an",
