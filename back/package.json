@@ -19,6 +19,7 @@
     "mongoose": "^7.1.1",
     "natural": "^6.3.0",
     "nodemon": "^2.0.22",
-    "openai": "^3.2.1"
+    "openai": "^3.2.1",
+    "stopword": "^2.0.8"
   }
 }

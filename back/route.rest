@@ -6,6 +6,10 @@ POST http://localhost:5000/chat
 Content-Type: application/json
 
 {
-    "role": "user",
-    "message": "I want to go to Tokyo"
+    "chatId": 1,
+    "message": "By airplane"
 }
+
+###
+
+DELETE http://localhost:5000/chat/1

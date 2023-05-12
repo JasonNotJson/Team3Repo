@@ -11,7 +11,7 @@ export class API {
 
     this.router.get("/", this.getChatLogs.bind(this));
     this.router.post("/", this.postChatLog.bind(this));
-    this.router.delete("/:id", this.deleteChatLog.bind(this));
+    this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
 
   async getChatLogs(req, res) {
@@ -24,21 +24,47 @@ export class API {
   }
 
   async postChatLog(req, res) {
-    const chatLog = new Schema({
-      chatId: req.body.chatId,
-      role: req.body.role,
-      message: req.body.message,
+    const userMessage = req.body.message;
+    const chatId = req.body.chatId;
+
+    const userChatLog = new Schema({
+      chatId: chatId,
+      role: "user",
+      message: userMessage,
     });
     try {
-      const newChatLog = await chatLog.save();
-      res.status(201).json(newChatLog);
+      await userChatLog.save();
+
+      const memory = await Schema.find({ chatId: chatId });
+
+      const botResponse = await this.bot.chat(userMessage, memory);
+
+      const botChatLog = new Schema({
+        chatId: chatId,
+        role: "bot",
+        message: botResponse,
+      });
+
+      await botChatLog.save();
+
+      res.status(201).json(botChatLog);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
 
-  deleteChatLog(req, res) {
-    // Your logic for DELETE requests
+  async deleteChatLog(req, res) {
+    const { chatId } = req.params;
+    try {
+      await Schema.deleteMany({ chatId: chatId });
+      res
+        .status(200)
+        .json({
+          message: `Chat logs with chatId ${chatId} deleted successfully.`,
+        });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   }
 }
 
