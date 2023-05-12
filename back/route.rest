@@ -1,0 +1,11 @@
+GET http://localhost:5000/chat
+
+###
+
+POST http://localhost:5000/chat/645e31115f8d951757f1446d
+Content-Type: application/json
+
+{
+    "role": "assistant",
+    "message": "Hello! I am your AI travel assistant!"
+}

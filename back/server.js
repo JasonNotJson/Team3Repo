@@ -1,16 +1,42 @@
 import cors from "cors";
 import express, { response } from "express";
-import { BotConfiguration } from "./botConfig.js";
-import { GoogleConfiguration } from "./googleConfig.js";
+import * as dotenv from "dotenv";
+import { router } from "./routes/API.js";
+import mongoose from "mongoose";
+import { MongoClient, ServerApiVersion } from "mongodb";
+import { BotConfiguration } from "./src/botConfig.js";
+import { GoogleConfiguration } from "./src/googleConfig.js";
 
-class server_side {
+dotenv.config();
+
+class Server {
   constructor() {
     this.app = express();
     this.app.use(express.json());
     this.app.use(cors());
-    this.port = process.env.PORT || 5000;
+    this.app.use("/chat", router);
+    this.port = 5000;
+    this.uri = process.env.MONGO_URI;
     this.bot = new BotConfiguration();
     this.gcse = new GoogleConfiguration();
+  }
+
+  db() {
+    console.log("connecting to db");
+
+    mongoose
+      .connect(this.uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then(() => console.log("Database Connected"))
+      .catch((error) =>
+        console.error("Error while connecting to MongoDB:", error.message)
+      );
+
+    const db = mongoose.connection;
+
+    db.on("error", console.error.bind(console, "MongoDB connection error:"));
   }
 
   listen() {
@@ -51,3 +77,7 @@ class server_side {
     });
   }
 }
+
+const server = new Server();
+server.listen();
+server.db();

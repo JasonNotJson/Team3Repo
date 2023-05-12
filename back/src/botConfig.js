@@ -6,7 +6,7 @@ import {
   summaryPrompt,
   continuePrompt,
   stopWords,
-} from "./configs/scripts.js";
+} from "../common/prompts.js";
 import { Configuration, OpenAIApi } from "openai";
 
 dotenv.config();
@@ -157,6 +157,6 @@ const testInstance = new BotConfiguration();
 // testInstance.initChat();
 // testInstance.Chat("I want to go to a 3 day tokyo trip");
 // testInstance.Chat("I want to go to Tokyo from May 13 to May 15");
-testInstance.Chat("What location is a good place to stay in Tokyo?");
+// testInstance.Chat("What location is a good place to stay in Tokyo?");
 // console.log(testInstance.context);
 //
