@@ -1,11 +1,8 @@
 import cors from "cors";
-import express, { response } from "express";
+import express from "express";
 import * as dotenv from "dotenv";
-import { router } from "./routes/API.js";
+import router from "./routes/API.js";
 import mongoose from "mongoose";
-import { MongoClient, ServerApiVersion } from "mongodb";
-import { BotConfiguration } from "./src/botConfig.js";
-import { GoogleConfiguration } from "./src/googleConfig.js";
 
 dotenv.config();
 
@@ -17,8 +14,6 @@ class Server {
     this.app.use("/chat", router);
     this.port = 5000;
     this.uri = process.env.MONGO_URI;
-    this.bot = new BotConfiguration();
-    this.gcse = new GoogleConfiguration();
   }
 
   db() {

@@ -1,5 +1,5 @@
 import("./TfIdf.cjs").then((keywordExtractor) => {
-  const userInput = "I want to go to tokyo";
+  const userInput = ``;
   const keywords = keywordExtractor.extractKeywords(userInput);
   console.log(keywords);
 });

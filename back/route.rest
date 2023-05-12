@@ -2,10 +2,14 @@ GET http://localhost:5000/chat
 
 ###
 
-POST http://localhost:5000/chat/645e31115f8d951757f1446d
+POST http://localhost:5000/chat
 Content-Type: application/json
 
 {
-    "role": "assistant",
-    "message": "Hello! I am your AI travel assistant!"
+    "chatId": 1,
+    "message": "By airplane"
 }
+
+###
+
+DELETE http://localhost:5000/chat/1

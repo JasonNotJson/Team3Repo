@@ -1,5 +1,4 @@
 import * as dotenv from "dotenv";
-import { response } from "express";
 
 dotenv.config();
 
