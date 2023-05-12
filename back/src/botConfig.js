@@ -1,13 +1,12 @@
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 import {
-  initialPrompt,
-  secretPrompt,
-  summaryPrompt,
+  identityPrompt,
   continuePrompt,
   stopWords,
 } from "../common/prompts.js";
 import { Configuration, OpenAIApi } from "openai";
+import { removeStopwords } from "stopword";
 
 dotenv.config();
 
@@ -21,22 +20,35 @@ export class BotConfiguration {
   }
 
   cleanReply(reply) {
-    return reply
-      .replace(/\n/g, "")
+    const replyArray = reply
+      .toLowerCase()
+      .replace(/\n/g, " ")
       .split(" ")
-      .filter((word) => !stopWords.includes(word.toLowerCase()))
-      .join(" ")
-      .toLowerCase();
+      .filter((word) => !stopWords.includes(word.toLowerCase()));
+    // reply
+    //   .toLowerCase()
+    //
+    //   .split(" ")
+    //
+    //   .join(" ");
+
+    const newString = removeStopwords(replyArray).join(" ");
+
+    return newString;
   }
 
-  async Chat(prompt) {
+  async chat(prompt, memory) {
     try {
+      const memoryLog = memory
+        .map((log) => `${log.role}: ${log.message}`)
+        .join(" ");
+      const cleanedMemoryLog = this.cleanReply(memoryLog);
       const response = await this.openai.createChatCompletion({
         model: this.model,
         messages: [
           {
             role: "user",
-            content: continuePrompt + prompt,
+            content: identityPrompt + cleanedMemoryLog + prompt,
           },
         ],
         max_tokens: 1000,
@@ -44,10 +56,11 @@ export class BotConfiguration {
 
       const replyObject = response.data.choices[0].message;
       const body = replyObject.content;
-      const markedPrompt = "'User prompt :" + prompt + "'";
 
       console.log("Reply : ");
       console.log(replyObject);
+      console.log("Memory : ");
+      console.log(cleanedMemoryLog);
       return body;
     } catch (error) {
       console.log(error);
@@ -80,10 +93,10 @@ export class BotConfiguration {
   // }
 }
 
-const testInstance = new BotConfiguration();
+// const testInstance = new BotConfiguration();
 // testInstance.initChat();
-// testInstance.Chat("I want to go to a 3 day tokyo trip");
-// testInstance.Chat("I want to go to Tokyo from May 13 to May 15");
-// testInstance.Chat("What location is a good place to stay in Tokyo?");
+// testInstance.chat("I want to go to a 3 day tokyo trip");
+// testInstance.chat("I want to go to Tokyo from May 13 to May 15");
+// testInstance.chat("What location is a good place to stay in Tokyo?");
 // console.log(testInstance.context);
 //
