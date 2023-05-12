@@ -1,10 +1,5 @@
 import * as dotenv from "dotenv";
-import * as fs from "fs";
-import {
-  identityPrompt,
-  continuePrompt,
-  stopWords,
-} from "../common/prompts.js";
+import { identityPrompt, stopWords } from "../common/prompts.js";
 import { Configuration, OpenAIApi } from "openai";
 import { removeStopwords } from "stopword";
 
