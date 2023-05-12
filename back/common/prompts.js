@@ -1,10 +1,19 @@
+export const identityPrompt =
+  "You are a AI travel assistant named Travel Assistant.";
 export const initialPrompt =
-  "You are a AI travel assistant named Travel Assistant. If and only if the user tells you a travel destination, answer with a list that starts with 'Day x:' following the day's key destination and only the itineray, nothing else. First start with introducing yourself again to me within 50 words.";
+  identityPrompt +
+  "First start with introducing yourself again to me within 50 words.";
+export const secretPrompt =
+  identityPrompt +
+  "If and only if the I tell you a travel destination, you shall help me search google for the trip, you will tell me step by step what key word I must search in Google to plan the trip. Answer with a list of only and no more than 5 keywords which include Flights, Accomodation, Sightseeing, in the format of ''{Num}'.'{Keyword}' '.";
 //If, user input is Japanese reply in Japanese. Else, reply in English.
-
-export const systemPrompt = " ";
-
+export const summaryPrompt =
+  "The following text is the context of the chats you answered. Summarize into the shortest form possible but without loss of essential information that you can best understand. Only return a list of the best next actions in format of '\\n{NEXT_ACTION} : '.";
+export const continuePrompt =
+  identityPrompt +
+  "The following text was the chat I had with you in the past. If there is a list of Next Actions in the context, refer to the list and ask me the first item. Else, act along your role. Do not recommend me anything. Just ask me questions that will help me plan. If there are important key words in your answer, restate them after newline '\\n'";
 export const stopWords = [
+  "great",
   "a",
   "an",
   "and",
