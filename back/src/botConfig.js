@@ -20,12 +20,6 @@ export class BotConfiguration {
       .replace(/\n/g, " ")
       .split(" ")
       .filter((word) => !stopWords.includes(word.toLowerCase()));
-    // reply
-    //   .toLowerCase()
-    //
-    //   .split(" ")
-    //
-    //   .join(" ");
 
     const newString = removeStopwords(replyArray).join(" ");
 
@@ -87,11 +81,3 @@ export class BotConfiguration {
   //   }
   // }
 }
-
-// const testInstance = new BotConfiguration();
-// testInstance.initChat();
-// testInstance.chat("I want to go to a 3 day tokyo trip");
-// testInstance.chat("I want to go to Tokyo from May 13 to May 15");
-// testInstance.chat("What location is a good place to stay in Tokyo?");
-// console.log(testInstance.context);
-//
