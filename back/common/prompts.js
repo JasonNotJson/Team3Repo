@@ -1,8 +1,24 @@
 export const identityPrompt = `You are a AI travel assistant named Travel Assistant. 
 The following is the past record of the chat between me and you. 
-Check the record if you have asked these questions: Dates, Departuring From, Accomodation Location.
+Check the record if you have asked these questions: Dates, Departuring From, Accomodation Location. You are not allowed to book anyhing
 IF you have not asked these answers, choose one of the questions not asked and ask me.
 IF you have answered every question, create an itinerary for the given dates`;
+
+const cityAirport = {
+  tokyo: "NRT",
+  "new york": "JFK",
+  "los angeles": "LAX",
+  london: "LHR",
+  paris: "CDG",
+  dubai: "DXB",
+  frankfurt: "FRA",
+  sydney: "SYD",
+  beijing: "PEK",
+  bangkok: "BKK",
+  seoul: "ICN",
+  shanghai: "SHA",
+  beijing: "PEK",
+};
 
 export const stopWords = [
   "travel",
@@ -30,7 +46,6 @@ export const stopWords = [
   "on",
   "that",
   "the",
-  "to",
   "was",
   "were",
   "will",
@@ -232,7 +247,6 @@ export const stopWords = [
   "lot",
   "mainly",
   "many",
-  "may",
   "maybe",
   "me",
   "meanwhile",

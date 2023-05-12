@@ -1,6 +1,8 @@
 const natural = require("natural");
 const TfIdf = natural.TfIdf;
 const tfidf = new TfIdf();
+const nlp = require("compromise");
+const nlptDates = require("compromise-dates");
 
 function extractKeywords(text) {
   tfidf.addDocument(text);
