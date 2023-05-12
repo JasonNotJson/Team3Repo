@@ -8,9 +8,6 @@ export class GoogleConfiguration {
     this.apiKey = process.env.GOOGLE_API_KEY;
     this.cx = process.env.GOOGLE_CX;
     this.apiUrl = "https://www.googleapis.com/customsearch/v1";
-    this.searchUrl = `${apiUrl}?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(
-      searchQuery
-    )}`;
   }
 
   fetchQueryResults(searchQuery) {
