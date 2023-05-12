@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
-export const chatSchema = new mongoose.Schema({
+const chatSchema = new mongoose.Schema({
+  chatId: {
+    type: String,
+    required: true,
+  },
   role: {
     type: String,
     required: true,
@@ -11,6 +15,6 @@ export const chatSchema = new mongoose.Schema({
   },
 });
 
-export const Schema = mongoose.model("Chat", chatSchema);
+const Schema = mongoose.model("Chat", chatSchema);
 
 export default Schema;

@@ -1,33 +1,45 @@
 import { Router } from "express";
 import Schema from "../models/schema.js";
+import { BotConfiguration } from "../src/botConfig.js";
+import { GoogleConfiguration } from "../src/googleConfig.js";
 
-export const router = Router();
+export class API {
+  constructor() {
+    this.router = Router();
+    this.bot = new BotConfiguration();
+    this.gcse = new GoogleConfiguration();
 
-router.get("/", async (req, res) => {
-  try {
-    const chatLog = await Schema.find();
-    res.send(chatLog);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    this.router.get("/", this.getChatLogs.bind(this));
+    this.router.post("/", this.postChatLog.bind(this));
+    this.router.delete("/:id", this.deleteChatLog.bind(this));
   }
-  res.send("Hello World!");
-});
 
-router.get("/:id", (req, res) => {
-  res.send(req.params.id);
-});
-
-router.post("/:id", async (req, res) => {
-  const chatLog = new Schema({
-    role: req.body.role,
-    message: req.body.message,
-  });
-  try {
-    const newChatLog = await chatLog.save();
-    res.status(201).json(newChatLog);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  async getChatLogs(req, res) {
+    try {
+      const chatLogs = await Schema.find();
+      res.send(chatLogs);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   }
-});
-router.put("/:id", (req, res) => {});
-router.delete("/:id", (req, res) => {});
+
+  async postChatLog(req, res) {
+    const chatLog = new Schema({
+      chatId: req.body.chatId,
+      role: req.body.role,
+      message: req.body.message,
+    });
+    try {
+      const newChatLog = await chatLog.save();
+      res.status(201).json(newChatLog);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  deleteChatLog(req, res) {
+    // Your logic for DELETE requests
+  }
+}
+
+export default new API().router;
