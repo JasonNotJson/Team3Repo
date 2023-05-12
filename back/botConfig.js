@@ -49,3 +49,5 @@ export const initialChat = async () => {
     throw error;
   }
 };
+
+initialChat();
