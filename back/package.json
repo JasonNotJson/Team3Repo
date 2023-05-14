@@ -23,6 +23,7 @@
     "natural": "^6.3.0",
     "nodemon": "^2.0.22",
     "openai": "^3.2.1",
+    "puppeteer": "^20.2.0",
     "stopword": "^2.0.8"
   }
 }
