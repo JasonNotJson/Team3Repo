@@ -4,11 +4,10 @@ import NlpConfiguration from "./nlpConfig.js";
 dotenv.config();
 
 export default class GoogleConfiguration {
-  constructor(memory) {
+  constructor() {
     this.apiKey = process.env.GOOGLE_API_KEY;
     this.cx = process.env.GOOGLE_CX;
     this.apiUrl = "https://www.googleapis.com/customsearch/v1";
-    this.searchWords = new NlpConfiguration(memory).processDateLoc();
   }
 
   fetchQueryResults(searchQuery) {
@@ -28,6 +27,11 @@ export default class GoogleConfiguration {
       .catch((error) => {
         console.log("Error:", error);
       });
+  }
+
+  searchWords(memory) {
+    const results = new NlpConfiguration(memory).processDateLoc();
+    return results;
   }
 }
 

@@ -80,7 +80,13 @@ export class API {
       await userChatLog.save();
 
       const memory = await Schema.find({ chatId: chatId });
-      const test = this.gcse.searchWords;
+      try {
+        const cleaned = cleanMemory(memory);
+        const test = this.gcse.searchWords(cleaned);
+        console.log(test);
+      } catch (error) {
+        console.log(error);
+      }
 
       const botResponse = await this.bot.chat(userMessage, memory);
 
@@ -91,8 +97,6 @@ export class API {
       });
 
       await botChatLog.save();
-
-      console.log(test);
 
       res.status(201).json(botChatLog);
     } catch (error) {
