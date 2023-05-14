@@ -32,19 +32,26 @@ export default class NlpConfiguration {
 
   getAirports() {
     const tfidfPlaces = this.getTfidfPlaces();
+    console.log(tfidfPlaces[0][0]);
     return tfidfPlaces.reduce((acc, [city, _], index) => {
-      let key = index === 0 ? "departLoc" : "arriveLoc";
-      return { ...acc, [key]: { [city]: this.cityAirport[city] } };
+      let keyPort = index === 0 ? "arrivePort" : "departPort";
+      let keyCountry = index === 0 ? "arrivedCountry" : "departedCountry";
+      return { ...acc, [keyPort]: this.cityAirport[city], [keyCountry]: city };
     }, {});
   }
 
   processDateLoc() {
     const dates = this.getDates();
     const queryAirports = this.getAirports();
-    return { depart: dates[0], ...queryAirports, arrive: dates[1] };
+    return {
+      depart: dates[0],
+      ...queryAirports,
+      arrive: dates[1],
+      duration: dates[1] - dates[0] + 1,
+    };
   }
 }
 const memory = `want tokyo bot: assistant: great choice! please provide dates plan tokyo? user: planning tokyo may 13th may 15th bot: bot: thanks providing dates. please tell departing from? user: departing seoul bot: bot: thank letting know. tell stay tokyo? user: stay shinjuku bot: one question, booked accommodation shinjuku suggest options? user: suggest options bot: bot: sure! accommodation options shinjuku: 1. shinjuku granbell hotel 2. hyatt regency tokyo  3. keio plaza hotel tokyo  4. hilton tokyo  5. hotel sunroute plaza shinjuku  options picked accommodation. user: suggest cheaper options bot: bot: sure, budget-friendly accommodation options shinjuku: 1. shin okubo sekitei 2. shinjuku kuyakushomae capsule hotel 3. business hotel yamashiro 4. hotel wing international premium tokyo yotsuya 5. hotel gracery shinjuku (sometimes deals discounts). preferences want book options you. user: give schedule`;
 const natLang = new NlpConfiguration(memory);
 const result = natLang.processDateLoc();
-console.log(Object.values(result["departLoc"])[0]);
+console.log(result);

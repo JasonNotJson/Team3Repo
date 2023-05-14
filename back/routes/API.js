@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { cleanReply, logMemory } from "../common/clean.js";
 import Schema from "../models/schema.js";
 import BotConfiguration from "../src/botConfig.js";
 import GoogleConfiguration from "../src/googleConfig.js";
@@ -8,7 +9,7 @@ export class API {
     this.router = Router();
     this.bot = new BotConfiguration();
     this.gcse = new GoogleConfiguration();
-
+    this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
     this.router.post("/", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));

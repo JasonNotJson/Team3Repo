@@ -1,7 +1,9 @@
 import * as dotenv from "dotenv";
 import { identityPrompt, stopWords } from "../common/prompts.js";
 import { Configuration, OpenAIApi } from "openai";
-import { removeStopwords } from "stopword";
+
+import NlpConfiguration from "./nlpConfig.js";
+import { cleanMemory, cleanReply, logMemory } from "../common/clean.js";
 
 dotenv.config();
 
@@ -11,27 +13,14 @@ export default class BotConfiguration {
       apiKey: process.env.OPENAI_API_KEY,
     });
     this.openai = new OpenAIApi(this.configuration);
+    this.nlp = new NlpConfiguration();
     this.model = "gpt-3.5-turbo";
-  }
-
-  cleanReply(reply) {
-    const replyArray = reply
-      .toLowerCase()
-      .replace(/\n/g, " ")
-      .split(" ")
-      .filter((word) => !stopWords.includes(word.toLowerCase()));
-
-    const newString = removeStopwords(replyArray).join(" ");
-
-    return newString;
   }
 
   async chat(prompt, memory) {
     try {
-      const memoryLog = memory
-        .map((log) => `${log.role}: ${log.message}`)
-        .join(" ");
-      const cleanedMemoryLog = this.cleanReply(memoryLog);
+      const cleanMemory = cleanMemory(memory);
+      const cleanedMemoryLog = logMemory(cleanMemory);
       const response = await this.openai.createChatCompletion({
         model: this.model,
         messages: [

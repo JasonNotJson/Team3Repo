@@ -28,3 +28,21 @@ export default class GoogleConfiguration {
       });
   }
 }
+
+const target = {
+  depart: "230513",
+  arrivePort: "NRT",
+  arrivedCountry: "tokyo",
+  departPort: "ICN",
+  departedCountry: "seoul",
+  arrive: "230515",
+  duration: 3,
+};
+
+// console.log(`${target["arrivedCountry"]}`);
+
+const gcse = new GoogleConfiguration();
+
+gcse.fetchQueryResults(
+  `${target["arrivedCountry"]} ${target["duration"]} day trip itenary`
+);
