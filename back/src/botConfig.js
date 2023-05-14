@@ -1,9 +1,8 @@
 import * as dotenv from "dotenv";
 import { identityPrompt, stopWords } from "../common/prompts.js";
 import { Configuration, OpenAIApi } from "openai";
-
 import NlpConfiguration from "./nlpConfig.js";
-import { cleanMemory, cleanReply, logMemory } from "../common/clean.js";
+import { cleanMemory } from "../common/clean.js";
 
 dotenv.config();
 
@@ -19,14 +18,13 @@ export default class BotConfiguration {
 
   async chat(prompt, memory) {
     try {
-      const cleanMemory = cleanMemory(memory);
-      const cleanedMemoryLog = logMemory(cleanMemory);
+      const cleanedMemory = cleanMemory(memory);
       const response = await this.openai.createChatCompletion({
         model: this.model,
         messages: [
           {
             role: "user",
-            content: identityPrompt + cleanedMemoryLog + prompt,
+            content: identityPrompt + cleanedMemory + prompt,
           },
         ],
         max_tokens: 1000,
@@ -38,7 +36,7 @@ export default class BotConfiguration {
       console.log("Reply : ");
       console.log(replyObject);
       console.log("Memory : ");
-      console.log(cleanedMemoryLog);
+      console.log(cleanedMemory);
       return body;
     } catch (error) {
       console.log(error);

@@ -9,12 +9,7 @@ export const cleanMemory = (memory) => {
     .filter((word) => !stopWords.includes(word.toLowerCase()));
 
   const processedReply = removeStopwords(replyArray).join(" ");
-
-  return processedReply;
-};
-
-export const logMemory = (memory) => {
-  const processedMemory = memory
+  const processedMemory = processedReply
     .map((log) => `${log.role}: ${log.message}`)
     .join(" ");
   return processedMemory;
