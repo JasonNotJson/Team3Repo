@@ -57,7 +57,7 @@ export class API {
 
     const processedMemory = cleanMemory(memory);
     const taskObj = processDateLoc(processedMemory);
-    // check if status of task is complete
+
     if (checkTask(taskObj)) {
       scrape().then(() => {
         res.write(

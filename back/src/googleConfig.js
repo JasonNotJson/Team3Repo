@@ -19,7 +19,7 @@ export default class GoogleConfiguration {
     fetch(searchUrl)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        console.log(data.items);
         var items = data.items;
         items.forEach((item) => {
           console.log(item.link);
