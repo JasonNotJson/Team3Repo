@@ -13,6 +13,7 @@
   "dependencies": {
     "compromise": "^14.9.0",
     "compromise-dates": "^3.4.1",
+    "compromise-stats": "^0.1.0",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",

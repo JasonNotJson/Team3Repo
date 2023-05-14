@@ -1,7 +1,7 @@
 import { Router } from "express";
 import Schema from "../models/schema.js";
-import { BotConfiguration } from "../src/botConfig.js";
-import { GoogleConfiguration } from "../src/googleConfig.js";
+import BotConfiguration from "../src/botConfig.js";
+import GoogleConfiguration from "../src/googleConfig.js";
 
 export class API {
   constructor() {
@@ -57,11 +57,9 @@ export class API {
     const { chatId } = req.params;
     try {
       await Schema.deleteMany({ chatId: chatId });
-      res
-        .status(200)
-        .json({
-          message: `Chat logs with chatId ${chatId} deleted successfully.`,
-        });
+      res.status(200).json({
+        message: `Chat logs with chatId ${chatId} deleted successfully.`,
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

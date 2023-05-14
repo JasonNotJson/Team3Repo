@@ -5,7 +5,7 @@ import { removeStopwords } from "stopword";
 
 dotenv.config();
 
-export class BotConfiguration {
+export default class BotConfiguration {
   constructor() {
     this.configuration = new Configuration({
       apiKey: process.env.OPENAI_API_KEY,

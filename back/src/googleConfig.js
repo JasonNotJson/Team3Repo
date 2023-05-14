@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-export class GoogleConfiguration {
+export default class GoogleConfiguration {
   constructor() {
     this.apiKey = process.env.GOOGLE_API_KEY;
     this.cx = process.env.GOOGLE_CX;
