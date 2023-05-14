@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cleanMemory, cleanReply } from "../common/clean.js";
+import { cleanMemory } from "../common/clean.js";
 import Schema from "../models/schema.js";
 import BotConfiguration from "../src/botConfig.js";
 import GoogleConfiguration from "../src/googleConfig.js";
@@ -11,7 +11,7 @@ export class API {
     this.gcse = new GoogleConfiguration();
     this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
-    this.router.get("/ses", this.getSES.bind(this));
+    // this.router.get("/ses", this.getSES.bind(this));
     this.router.post("/", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
@@ -25,47 +25,47 @@ export class API {
     }
   }
 
-  async getSES(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Content-type", "application/json");
-    res.setHeader("Connection", "keep-alive");
+  // async getSES(req, res) {
+  //   res.setHeader("Access-Control-Allow-Origin", "*");
+  //   res.setHeader("Content-type", "application/json");
+  //   res.setHeader("Connection", "keep-alive");
 
-    const chatId = req.body.chatId;
+  //   const chatId = req.body.chatId;
 
-    const checkTask = (processedMemory) => {
-      const requiredProps = [
-        "depart",
-        "arrivePort",
-        "arrivedCountry",
-        "departPort",
-        "departedCountry",
-        "arrive",
-        "duration",
-      ];
-      const checkedProps = requiredProps.every(
-        (prop) =>
-          processedMemory.hasOwnProperty(prop) &&
-          processedMemory[prop] !== null &&
-          processedMemory[prop] !== undefined
-      );
-      return checkedProps;
-    };
+  //   const checkTask = (processedMemory) => {
+  //     const requiredProps = [
+  //       "depart",
+  //       "arrivePort",
+  //       "arrivedCountry",
+  //       "departPort",
+  //       "departedCountry",
+  //       "arrive",
+  //       "duration",
+  //     ];
+  //     const checkedProps = requiredProps.every(
+  //       (prop) =>
+  //         processedMemory.hasOwnProperty(prop) &&
+  //         processedMemory[prop] !== null &&
+  //         processedMemory[prop] !== undefined
+  //     );
+  //     return checkedProps;
+  //   };
 
-    const scrape = async () => {};
+  //   const scrape = async () => {};
 
-    const memory = await Schema.find({ chatId: chatId });
+  //   const memory = await Schema.find({ chatId: chatId });
 
-    const processedMemory = cleanMemory(memory);
-    const taskObj = processDateLoc(processedMemory);
+  //   const processedMemory = cleanMemory(memory);
+  //   const taskObj = processDateLoc(processedMemory);
 
-    if (checkTask(taskObj)) {
-      scrape().then(() => {
-        res.write(
-          `data: {keyWords:${taskObj}, booking:${booking}, sky:${sky}, refLinks:${links} `
-        );
-      });
-    }
-  }
+  //   if (checkTask(taskObj)) {
+  //     scrape().then(() => {
+  //       res.write(
+  //         `data: {keyWords:${taskObj}, booking:${booking}, sky:${sky}, refLinks:${links} `
+  //       );
+  //     });
+  //   }
+  // }
 
   async postChatLog(req, res) {
     const userMessage = req.body.message;
@@ -80,6 +80,7 @@ export class API {
       await userChatLog.save();
 
       const memory = await Schema.find({ chatId: chatId });
+      const test = this.gcse.searchWords;
 
       const botResponse = await this.bot.chat(userMessage, memory);
 
@@ -90,6 +91,8 @@ export class API {
       });
 
       await botChatLog.save();
+
+      console.log(test);
 
       res.status(201).json(botChatLog);
     } catch (error) {

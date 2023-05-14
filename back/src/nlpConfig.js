@@ -32,7 +32,7 @@ export default class NlpConfiguration {
 
   getAirports() {
     const tfidfPlaces = this.getTfidfPlaces();
-    console.log(tfidfPlaces[0][0]);
+    // console.log(tfidfPlaces[0][0]);
     return tfidfPlaces.reduce((acc, [city, _], index) => {
       let keyPort = index === 0 ? "arrivePort" : "departPort";
       let keyCountry = index === 0 ? "arrivedCountry" : "departedCountry";
