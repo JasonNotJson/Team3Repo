@@ -27,7 +27,7 @@ export default class BotConfiguration {
             content: identityPrompt + cleanedMemory + prompt,
           },
         ],
-        max_tokens: 1000,
+        max_tokens: 2000,
       });
 
       const replyObject = response.data.choices[0].message;
