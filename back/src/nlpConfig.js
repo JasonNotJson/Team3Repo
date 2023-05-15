@@ -2,7 +2,7 @@ import nlp from "compromise/three";
 import datePlugin from "compromise-dates";
 import nlpStats from "compromise-stats";
 import { parse, format } from "date-fns";
-import { cityAirport } from "../common/prompts.js";
+import { cityAirport, regEx } from "../common/prompts.js";
 nlp.plugin(datePlugin);
 nlp.plugin(nlpStats);
 
@@ -18,21 +18,26 @@ export default class NlpConfiguration {
       .dates()
       .format("{month} {date-ordinal}")
       .out("array");
-    return rawDates.map((rawDates) => {
-      const date = parse(rawDates, "MMMM do", new Date());
-      return format(date, "yyMMdd");
-    });
+    console.log(rawDates);
+    return rawDates
+      .filter((rawDate) => regEx.test(rawDate))
+      .map((rawDates) => {
+        const date = parse(rawDates, "MMMM do", new Date());
+        return format(date, "yyMMdd");
+      });
   }
 
   getTfidfPlaces() {
     const rawPlaces = this.doc.places().out("text");
     const processedPlaces = nlp(rawPlaces);
-    return processedPlaces.tfidf();
+    const tfidfPlaces = processedPlaces.tfidf();
+
+    return tfidfPlaces.filter((place) => place[0] in cityAirport);
   }
 
   getAirports() {
     const tfidfPlaces = this.getTfidfPlaces();
-    // console.log(tfidfPlaces[0][0]);
+    console.log(tfidfPlaces);
     return tfidfPlaces.reduce((acc, [city, _], index) => {
       let keyPort = index === 0 ? "arrivePort" : "departPort";
       let keyCountry = index === 0 ? "arrivedCountry" : "departedCountry";

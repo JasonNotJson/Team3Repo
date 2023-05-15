@@ -1,13 +1,19 @@
 export const identityPrompt = `You are a AI travel assistant named Travel Assistant. 
 The following is the past record of the chat between me and you. 
-Check the record if you have asked these questions: Dates, Departuring From, Accomodation Location. You are not allowed to book anyhing
+Check the record if you have asked these questions: Dates, Departuring From. You are not allowed to book anyhing
 IF you have not asked these answers, choose one of the questions not asked and ask me.
 IF you have answered every question, create an itinerary for the given dates`;
+
+export const regEx =
+  /^(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{1,2}(st|nd|rd|th))$/i;
 
 export const cityAirport = {
   tokyo: "NRT",
   "new york": "JFK",
+  york: "JFK",
   "los angeles": "LAX",
+  los: "LAX",
+  angeles: "LAX",
   london: "LHR",
   paris: "CDG",
   dubai: "DXB",

@@ -11,7 +11,7 @@ export class API {
     this.gcse = new GoogleConfiguration();
     this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
-    // this.router.get("/ses", this.getSES.bind(this));
+    this.router.get("/ses", this.getSES.bind(this));
     this.router.post("/", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
@@ -25,47 +25,23 @@ export class API {
     }
   }
 
-  // async getSES(req, res) {
-  //   res.setHeader("Access-Control-Allow-Origin", "*");
-  //   res.setHeader("Content-type", "application/json");
-  //   res.setHeader("Connection", "keep-alive");
+  async getSES(req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-type", "text/event-stream");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("Cache-Control", "no-cache");
 
-  //   const chatId = req.body.chatId;
+    const chatId = req.query.chatId;
 
-  //   const checkTask = (processedMemory) => {
-  //     const requiredProps = [
-  //       "depart",
-  //       "arrivePort",
-  //       "arrivedCountry",
-  //       "departPort",
-  //       "departedCountry",
-  //       "arrive",
-  //       "duration",
-  //     ];
-  //     const checkedProps = requiredProps.every(
-  //       (prop) =>
-  //         processedMemory.hasOwnProperty(prop) &&
-  //         processedMemory[prop] !== null &&
-  //         processedMemory[prop] !== undefined
-  //     );
-  //     return checkedProps;
-  //   };
+    const memory = await Schema.find({ chatId: chatId });
 
-  //   const scrape = async () => {};
-
-  //   const memory = await Schema.find({ chatId: chatId });
-
-  //   const processedMemory = cleanMemory(memory);
-  //   const taskObj = processDateLoc(processedMemory);
-
-  //   if (checkTask(taskObj)) {
-  //     scrape().then(() => {
-  //       res.write(
-  //         `data: {keyWords:${taskObj}, booking:${booking}, sky:${sky}, refLinks:${links} `
-  //       );
-  //     });
-  //   }
-  // }
+    const cleaned = cleanMemory(memory);
+    console.log(cleaned);
+    const linksJson = await this.gcse.searchWords(cleaned);
+    const data = `data: ${linksJson}\n\n`;
+    res.write(data);
+    res.end();
+  }
 
   async postChatLog(req, res) {
     const userMessage = req.body.message;
@@ -80,13 +56,6 @@ export class API {
       await userChatLog.save();
 
       const memory = await Schema.find({ chatId: chatId });
-      try {
-        const cleaned = cleanMemory(memory);
-        const test = this.gcse.searchWords(cleaned);
-        console.log(test);
-      } catch (error) {
-        console.log(error);
-      }
 
       const botResponse = await this.bot.chat(userMessage, memory);
 
