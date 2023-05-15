@@ -39,38 +39,6 @@ class Server {
       console.log(`Server is running on port ${this.port}`);
     });
   }
-
-  // initiate Chat
-  post() {
-    this.app.post("/init", async (req, res) => {
-      try {
-        const response = this.bot.initChat();
-
-        res.status(200).send({ bot: response });
-      } catch (error) {
-        console.log(error);
-
-        res.status(500).send({ error });
-      }
-    });
-  }
-
-  //Continue Chat
-  post() {
-    this.app.post("/main", async (req, res) => {
-      try {
-        const prompt = req.body.prompt;
-
-        const response = this.bot.Chat(prompt);
-
-        res.status(200).send({ bot: response });
-      } catch (error) {
-        console.log(error);
-
-        res.status(500).send({ error });
-      }
-    });
-  }
 }
 
 const server = new Server();

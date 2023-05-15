@@ -1,46 +1,33 @@
 import * as dotenv from "dotenv";
 import { identityPrompt, stopWords } from "../common/prompts.js";
 import { Configuration, OpenAIApi } from "openai";
-import { removeStopwords } from "stopword";
+import NlpConfiguration from "./nlpConfig.js";
+import { cleanMemory } from "../common/clean.js";
 
 dotenv.config();
 
-export class BotConfiguration {
+export default class BotConfiguration {
   constructor() {
     this.configuration = new Configuration({
       apiKey: process.env.OPENAI_API_KEY,
     });
     this.openai = new OpenAIApi(this.configuration);
+    this.nlp = new NlpConfiguration();
     this.model = "gpt-3.5-turbo";
-  }
-
-  cleanReply(reply) {
-    const replyArray = reply
-      .toLowerCase()
-      .replace(/\n/g, " ")
-      .split(" ")
-      .filter((word) => !stopWords.includes(word.toLowerCase()));
-
-    const newString = removeStopwords(replyArray).join(" ");
-
-    return newString;
   }
 
   async chat(prompt, memory) {
     try {
-      const memoryLog = memory
-        .map((log) => `${log.role}: ${log.message}`)
-        .join(" ");
-      const cleanedMemoryLog = this.cleanReply(memoryLog);
+      const cleanedMemory = cleanMemory(memory);
       const response = await this.openai.createChatCompletion({
         model: this.model,
         messages: [
           {
             role: "user",
-            content: identityPrompt + cleanedMemoryLog + prompt,
+            content: identityPrompt + cleanedMemory + prompt,
           },
         ],
-        max_tokens: 1000,
+        max_tokens: 2000,
       });
 
       const replyObject = response.data.choices[0].message;
@@ -49,7 +36,7 @@ export class BotConfiguration {
       console.log("Reply : ");
       console.log(replyObject);
       console.log("Memory : ");
-      console.log(cleanedMemoryLog);
+      console.log(cleanedMemory);
       return body;
     } catch (error) {
       console.log(error);

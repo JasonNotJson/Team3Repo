@@ -1,15 +1,17 @@
 import { Router } from "express";
+import { cleanMemory } from "../common/clean.js";
 import Schema from "../models/schema.js";
-import { BotConfiguration } from "../src/botConfig.js";
-import { GoogleConfiguration } from "../src/googleConfig.js";
+import BotConfiguration from "../src/botConfig.js";
+import GoogleConfiguration from "../src/googleConfig.js";
 
 export class API {
   constructor() {
     this.router = Router();
     this.bot = new BotConfiguration();
     this.gcse = new GoogleConfiguration();
-
+    this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
+    // this.router.get("/ses", this.getSES.bind(this));
     this.router.post("/", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
@@ -22,6 +24,48 @@ export class API {
       res.status(500).json({ message: error.message });
     }
   }
+
+  // async getSES(req, res) {
+  //   res.setHeader("Access-Control-Allow-Origin", "*");
+  //   res.setHeader("Content-type", "application/json");
+  //   res.setHeader("Connection", "keep-alive");
+
+  //   const chatId = req.body.chatId;
+
+  //   const checkTask = (processedMemory) => {
+  //     const requiredProps = [
+  //       "depart",
+  //       "arrivePort",
+  //       "arrivedCountry",
+  //       "departPort",
+  //       "departedCountry",
+  //       "arrive",
+  //       "duration",
+  //     ];
+  //     const checkedProps = requiredProps.every(
+  //       (prop) =>
+  //         processedMemory.hasOwnProperty(prop) &&
+  //         processedMemory[prop] !== null &&
+  //         processedMemory[prop] !== undefined
+  //     );
+  //     return checkedProps;
+  //   };
+
+  //   const scrape = async () => {};
+
+  //   const memory = await Schema.find({ chatId: chatId });
+
+  //   const processedMemory = cleanMemory(memory);
+  //   const taskObj = processDateLoc(processedMemory);
+
+  //   if (checkTask(taskObj)) {
+  //     scrape().then(() => {
+  //       res.write(
+  //         `data: {keyWords:${taskObj}, booking:${booking}, sky:${sky}, refLinks:${links} `
+  //       );
+  //     });
+  //   }
+  // }
 
   async postChatLog(req, res) {
     const userMessage = req.body.message;
@@ -36,6 +80,13 @@ export class API {
       await userChatLog.save();
 
       const memory = await Schema.find({ chatId: chatId });
+      try {
+        const cleaned = cleanMemory(memory);
+        const test = this.gcse.searchWords(cleaned);
+        console.log(test);
+      } catch (error) {
+        console.log(error);
+      }
 
       const botResponse = await this.bot.chat(userMessage, memory);
 
@@ -57,11 +108,9 @@ export class API {
     const { chatId } = req.params;
     try {
       await Schema.deleteMany({ chatId: chatId });
-      res
-        .status(200)
-        .json({
-          message: `Chat logs with chatId ${chatId} deleted successfully.`,
-        });
+      res.status(200).json({
+        message: `Chat logs with chatId ${chatId} deleted successfully.`,
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
