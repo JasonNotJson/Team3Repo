@@ -11,7 +11,7 @@ export class API {
     this.gcse = new GoogleConfiguration();
     this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
-    this.router.get("/ses", this.getSES.bind(this));
+    this.router.get("/sse", this.getSES.bind(this));
     this.router.post("/", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
@@ -25,7 +25,7 @@ export class API {
     }
   }
 
-  async getSES(req, res) {
+  async getSSE(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Content-type", "text/event-stream");
     res.setHeader("Connection", "keep-alive");
