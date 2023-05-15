@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
     "chatId": 1,
-    "message": "No now create an plan for my trip"
+    "message": "Recommend me a plan!"
 }
 
 ###
@@ -16,4 +16,4 @@ DELETE http://localhost:5000/chat/1
 
 ###
 
-GET http://localhost:5000/chat/ses
+GET http://localhost:5000/chat/sse?chatId=1
