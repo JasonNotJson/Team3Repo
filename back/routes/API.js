@@ -11,7 +11,7 @@ export class API {
     this.gcse = new GoogleConfiguration();
     this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
-    this.router.get("/sse", this.getSES.bind(this));
+    this.router.get("/sse", this.getSSE.bind(this));
     this.router.post("/", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
