@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
     "chatId": 1,
-    "message": "Recommend me a plan!"
+    "message": "Give me some more"
 }
 
 ###
