@@ -84,22 +84,26 @@ const handleSubmit = async (e) => {
   // messageDiv.innerHTML = "..."
   loader(messageDiv);
 
-  const response = await fetch("http://localhost:5173/chat", {
+  const response = await fetch("http://localhost:3000/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      prompt: data.get("prompt"),
+      chatId: 1,
+      message: data.get("prompt"),
     }),
   });
+
+  console.log(response); // add this line
 
   clearInterval(loadInterval);
   messageDiv.innerHTML = " ";
 
   if (response.ok) {
     const data = await response.json();
-    const parsedData = data.bot.trim(); // trims any trailing spaces/'\n'
+    console.log({ data });
+    const parsedData = data.trim(); // trims any trailing spaces/'\n'
 
     console.log({ parsedData });
 

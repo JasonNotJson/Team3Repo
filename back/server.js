@@ -12,7 +12,7 @@ class Server {
     this.app.use(express.json());
     this.app.use(cors());
     this.app.use("/chat", router);
-    this.port = 5173;
+    this.port = 3000;
     this.uri = process.env.MONGO_URI;
   }
 

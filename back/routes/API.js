@@ -12,7 +12,7 @@ export class API {
     this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
     this.router.get("/sse", this.getSSE.bind(this));
-    this.router.post("/", this.postChatLog.bind(this));
+    this.router.post("", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
 
@@ -66,7 +66,7 @@ export class API {
 
       await botChatLog.save();
 
-      res.status(201).json(botChatLog);
+      res.status(201).json(botResponse);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

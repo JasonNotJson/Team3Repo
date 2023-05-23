@@ -1,8 +1,8 @@
-GET http://localhost:5173/chat
+GET http://localhost:3000/chat
 
 ###
 
-POST http://localhost:5173/chat
+POST http://localhost:3000/chat
 Content-Type: application/json
 
 {
@@ -12,8 +12,8 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:5173/chat/1
+DELETE http://localhost:3000/chat/1
 
 ###
 
-GET http://localhost:5173/chat/sse?chatId=1
+GET http://localhost:3000/chat/sse?chatId=1
