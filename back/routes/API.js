@@ -40,7 +40,6 @@ export class API {
     const linksJson = await this.gcse.searchWords(cleaned);
     const data = `data: ${linksJson}\n\n`;
     res.write(data);
-    res.end();
   }
 
   async postChatLog(req, res) {
