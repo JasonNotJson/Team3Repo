@@ -1,0 +1,29 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+.side {
+    width: 20%;
+    background-color: green;
+}
+
+.main {
+    width: 80%;
+    background-color: white;
+    position: relative;
+}
+
+.sticky-input {
+    position: sticky;
+    bottom: 0;
+    text-align: center;
+}
+
+.sticky-input input {
+    margin-top: 20px;
+    padding: 10px;
+    width: 80%;
+}
