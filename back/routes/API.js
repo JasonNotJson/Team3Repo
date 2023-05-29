@@ -12,7 +12,7 @@ export class API {
     this.processedMemory = null;
     this.router.get("/", this.getChatLogs.bind(this));
     this.router.get("/sse", this.getSSE.bind(this));
-    this.router.post("/", this.postChatLog.bind(this));
+    this.router.post("", this.postChatLog.bind(this));
     this.router.delete("/:chatId", this.deleteChatLog.bind(this));
   }
 
@@ -27,7 +27,7 @@ export class API {
 
   async getSSE(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Content-type", "text/event-stream");
+    res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Connection", "keep-alive");
     res.setHeader("Cache-Control", "no-cache");
 
@@ -40,7 +40,6 @@ export class API {
     const linksJson = await this.gcse.searchWords(cleaned);
     const data = `data: ${linksJson}\n\n`;
     res.write(data);
-    res.end();
   }
 
   async postChatLog(req, res) {
@@ -67,7 +66,7 @@ export class API {
 
       await botChatLog.save();
 
-      res.status(201).json(botChatLog);
+      res.status(201).json(botResponse);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
