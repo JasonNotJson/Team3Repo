@@ -27,7 +27,7 @@ export class API {
 
   async getSSE(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Content-type", "text/event-stream");
+    res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Connection", "keep-alive");
     res.setHeader("Cache-Control", "no-cache");
 

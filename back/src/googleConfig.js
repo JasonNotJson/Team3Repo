@@ -75,11 +75,13 @@ export default class GoogleConfiguration {
 
     if (isChecked) {
       const searchQuery = this.buildSearchQuery(results);
-      const jsonResultObj = this.fetchQueryResults(searchQuery);
-      return jsonResultObj;
+      const jsonResultObj = await this.fetchQueryResults(searchQuery);
+      const data = JSON.stringify({ status: "Complete", links: jsonResultObj });
+      console.log(jsonResultObj);
+      return data;
     } else {
       console.log("Incomplete");
-      return "Incomplete";
+      return JSON.stringify({ status: "Incomplete" });
     }
   }
 }
